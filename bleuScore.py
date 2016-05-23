@@ -3,7 +3,6 @@ import os
 import random
 from collections import Counter
 import numpy as np
-import utils
 from random import shuffle
 from nltk.translate import bleu_score
 
@@ -52,8 +51,14 @@ for sentence in sentences:
         stringSentence.append(vocab[wordIndex-1])
     stringSentences.append(stringSentence)
 
-stringSentences = stringSentences[:1790] + stringSentences[2100:]
-hypotheses = hypotheses[:1790] + hypotheses[2100:]
+#stringSentences = stringSentences[:1790] + stringSentences[2100:]
+#hypotheses = hypotheses[:1790] + hypotheses[2100:]
+
+stringSentencesDev = stringSentences[2000:] 
+hypothesesDev = hypotheses[2000:] 
+
+stringSentencesTest = stringSentences[2000:] 
+hypothesesTest = hypotheses[2000:] 
 
 """
 scores = []
@@ -64,4 +69,4 @@ average = np.average(np.array(scores))
 #print bleu_score.corpus_bleu(stringSentences, hypotheses)
 print average
 """
-print bleu_score.corpus_bleu(stringSentences, hypotheses)
+print bleu_score.corpus_bleu(stringSentencesDev, hypothesesDev)
