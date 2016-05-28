@@ -13,10 +13,11 @@ maxBeta = -1
 
 transitions = []
 
-def getVals (filename):
+def getVals (filename, flag):
     temp = []
-    temp1 = []
-    temp2 = []
+    if flag == 1:
+        temp1 = []
+        temp2 = []
     final = []
     lookupIndex = 0
     count = 0
@@ -26,24 +27,28 @@ def getVals (filename):
             if (count == transitions[lookupIndex] and count != 0):
                 lookupIndex = lookupIndex + 1
                 final.append(temp)
-                counts.append(temp1)
-                lengths.append(temp2)
+                if flag == 1:
+                    counts.append(temp1)
+                    lengths.append(temp2)
                 temp = []
-                temp1 = []
-                temp2 = []
+                if flag == 1:
+                    temp1 = []
+                    temp2 = []
 
             if (count == 0):
                 lookupIndex = lookupIndex + 1
 
         temp.append(float(line))
-        temp1.append(count)
-        temp2.append(len(sentences[count]))
+        if flag == 1:
+            temp1.append(count)
+            temp2.append(len(sentences[count]))
 
         count = count + 1
 
     final.append(temp)
-    counts.append(temp1)
-    lengths.append(temp2)
+    if flag == 1:
+        counts.append(temp1)
+        lengths.append(temp2)
     f.close()
     return final
 
@@ -54,7 +59,7 @@ def getMaxVals():
         maxScore = -1000000
         maxIndex = -1
         for j in range(0,len(stProbs[i])):
-            score = ((1-lambdaVal) * tsProbs[i][j]) + (lambdaVal * stProbs[i][j]) + (gamma * lengths[i][j]) + (alpha * tfidf[i][j]) + (beta * glove[i][j]) 
+            score = ((1-lambdaVal) * tsProbs[i][j]) + (lambdaVal * stProbs[i][j]) + (gamma * lengths[i][j]) + (alpha * tfidf[i][j]) 
 
             if score > maxScore:
                 maxScore = score
@@ -97,8 +102,8 @@ for line in f:
     sentences.append(line)
 
 for i in range(0,10):
-    alpha = 0.00026523188864
-    beta = -0.438564088765
+    alpha = 0
+    beta = 0
 
     tsProbs = []
     stProbs= []
@@ -106,12 +111,10 @@ for i in range(0,10):
     glove = []
     counts = []
     lengths = []
-    tsProbs = getVals('t_given_s_dev.txt')
-    stProbs = getVals('s_given_t_dev.txt')
-    tfidf = getVals('tfidf_dev.txt')
-    counts = []
-    lengths = []
-    glove = getVals('dev_src_glove_dist.txt')
+    tsProbs = getVals('t_given_s_dev.txt', 0)
+    stProbs = getVals('s_given_t_dev.txt', 0)
+    tfidf = getVals('tfidf_dev.txt', 0)
+    glove = getVals('dev_src_glove_dist.txt', 1)
     bleu = getMaxVals()
     print bleu
     print alpha
