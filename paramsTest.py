@@ -7,9 +7,6 @@ from random import shuffle
 import subprocess
 gamma = 0.01
 lambdaVal = 0.5
-maxBleu = 0
-maxAlpha = -1
-maxBeta = -1
 
 transitions = []
 
@@ -44,6 +41,7 @@ def getVals (filename):
     final.append(temp)
     counts.append(temp1)
     lengths.append(temp2)
+
     f.close()
     return final
 
@@ -64,14 +62,14 @@ def getMaxVals():
         maxIndecies.append(maxIndex)
         i = i + 1
 
-    f = open("rerankedDev.txt", "w")
+    f = open("rerankedTest.txt", "w")
     startIndex = 0
     for i in range(0, len(maxIndecies)):
         f.write(sentences[counts[i][maxIndecies[i]]])
         i = i + 1
     f.close()
 
-    perl_script = subprocess.Popen("perl multi-bleu.perl dev.tgt.txt < rerankedDev.txt > bleu.txt", shell = True)
+    perl_script = subprocess.Popen("perl multi-bleu.perl test.tgt.txt < rerankedTest.txt > bleu.txt", shell = True)
     perl_script.communicate()
     f = open("bleu.txt")
     for line in f:
@@ -83,7 +81,7 @@ def getMaxVals():
 number = 0
 startIndex = 0
 i = 0
-f = open('index_dev.txt')
+f = open('index_valid.txt')
 for line in f:
     if number != int(line):
         number = int(line)
@@ -92,35 +90,21 @@ for line in f:
 f.close()
 
 sentences = []
-f = open('rearank_target_dev.txt')
+f = open('rearank_target_valid.txt')
 for line in f:
     sentences.append(line)
 
-for i in range(0,10):
-    alpha = 0.00026523188864
-    beta = -0.438564088765
+counts = []
+lengths = []
+tsProbs = getVals('t_given_s_valid.txt')
+stProbs = getVals('s_given_t_valid.txt')
+counts = []
+lengths = []
+tfidf = getVals('tfidf_valid.txt')
+#glove = getVals('dev_src_glove_dist.txt')
 
-    tsProbs = []
-    stProbs= []
-    tfidf = []
-    glove = []
-    counts = []
-    lengths = []
-    tsProbs = getVals('t_given_s_dev.txt')
-    stProbs = getVals('s_given_t_dev.txt')
-    tfidf = getVals('tfidf_dev.txt')
-    counts = []
-    lengths = []
-    glove = getVals('dev_src_glove_dist.txt')
-    bleu = getMaxVals()
-    print bleu
-    print alpha
-    print beta
-    if bleu > maxBleu:
-        maxBleu = bleu
-        maxAlpha = alpha
-        maxBeta = beta
+alpha = 0.1
+beta = 0.1
+bleu = getMaxVals()
+print bleu
 
-print maxBleu
-print maxAlpha
-print maxBeta
