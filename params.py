@@ -5,7 +5,7 @@ from collections import Counter
 import numpy as np
 from random import shuffle
 import subprocess
-gamma = 0.01
+gamma = -0.01
 lambdaVal = 0.5
 maxBleu = 0
 maxAlpha = -1
@@ -52,14 +52,14 @@ def getVals (filename, flag):
     f.close()
     return final
 
-def getMaxVals():
+def getMaxVals(alpha, beta, lambdaVal, gamma):
     maxScores = []
     maxIndecies = []
     for i in range(0,len(stProbs)):
         maxScore = -1000000
         maxIndex = -1
         for j in range(0,len(stProbs[i])):
-            score = ((1-lambdaVal) * tsProbs[i][j]) + (lambdaVal * stProbs[i][j]) + (gamma * lengths[i][j]) + (alpha * tfidf[i][j]) 
+            score = ((1-lambdaVal) * tsProbs[i][j]) + (lambdaVal * stProbs[i][j]) + (gamma * lengths[i][j]) + (alpha * tfidf[i][j]) + (beta * glove[i][j]) 
 
             if score > maxScore:
                 maxScore = score
@@ -101,21 +101,17 @@ f = open('rearank_target_dev.txt')
 for line in f:
     sentences.append(line)
 
-for i in range(0,10):
-    alpha = 0
-    beta = 0
+tsProbs = getVals('t_given_s_dev.txt', 0)
+stProbs = getVals('s_given_t_dev.txt', 0)
+tfidf = getVals('tfidf_dev.txt', 0)
+counts = []
+lengths = []
+glove = getVals('dev_src_glove_dist.txt', 1)
 
-    tsProbs = []
-    stProbs= []
-    tfidf = []
-    glove = []
-    counts = []
-    lengths = []
-    tsProbs = getVals('t_given_s_dev.txt', 0)
-    stProbs = getVals('s_given_t_dev.txt', 0)
-    tfidf = getVals('tfidf_dev.txt', 0)
-    glove = getVals('dev_src_glove_dist.txt', 1)
-    bleu = getMaxVals()
+for i in range(0, 10):
+    alpha = random.uniform(0,0.0001)
+    beta = random.uniform(-2,0)
+    bleu = getMaxVals(alpha, beta, lambdaVal, gamma)
     print bleu
     print alpha
     print beta
