@@ -54,7 +54,7 @@ def getMaxVals():
         maxScore = -1000000
         maxIndex = -1
         for j in range(0,len(stProbs[i])):
-            score = ((1-lambdaVal) * tsProbs[i][j]) + (lambdaVal * stProbs[i][j]) + (gamma * lengths[i][j]) + (alpha * tfidf[i][j]) 
+            score = ((1-lambdaVal) * tsProbs[i][j]) + (lambdaVal * stProbs[i][j]) + (gamma * lengths[i][j]) + (alpha * tfidf[i][j]) + (beta * glove[i][j]) 
 
             if score > maxScore:
                 maxScore = score
