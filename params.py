@@ -135,7 +135,7 @@ def getMaxValsTest(alpha, beta, lambdaVal, gamma):
         maxScore = -1000000
         maxIndex = -1
         for j in range(0,len(stProbsTest[i])):
-            score = ((1-lambdaVal) * tsProbsTest[i][j]) + (lambdaVal * stProbsTest[i][j]) + (gamma * lengthsTest[i][j]) + (alpha * tfidfTest[i][j]) 
+            score = ((1-lambdaVal) * tsProbsTest[i][j]) + (lambdaVal * stProbsTest[i][j]) + (gamma * lengthsTest[i][j]) + (alpha * tfidfTest[i][j]) + (beta * gloveTest[i][j]) 
 
             if score > maxScore:
                 maxScore = score
@@ -202,13 +202,13 @@ glove = getVals('dev_src_glove_dist.txt', 1)
 
 tsProbsTest = getValsTest('t_given_s_valid.txt', 0)
 stProbsTest = getValsTest('s_given_t_valid.txt', 0)
+tfidfTest = getValsTest('tfidf_valid.txt', 0)
 countsTest = []
 lengthsTest = []
-tfidfTest = getValsTest('tfidf_valid.txt', 1)
-#gloveTest = getValsTest('dev_src_glove_dist.txt', 1)
+gloveTest = getValsTest('test_src_glove_dist.txt', 1)
 
 for i in range(0, 10):
-    alpha = random.uniform(0,0.0001)
+    alpha = random.uniform(0,0.0009)
     beta = random.uniform(-2,0)
     bleu = getMaxVals(alpha, beta, lambdaVal, gamma)
     bleuTest = getMaxValsTest(alpha, beta, lambdaVal, gamma)
@@ -228,7 +228,7 @@ for i in range(0, 10):
 
 print "Max dev bleu = " + str(maxBleu)
 print "Max test bleu = " + str(maxBleuTest)
-print "Dev alpha = " + str(maxAlpha)
-print "Dev beta = " + str(maxBeta)
-print "Max alpha test = " + str(maxAlphaTest)
+print "Max dev alpha = " + str(maxAlpha)
+print "Max dev beta = " + str(maxBeta)
+print "Max test alpha = " + str(maxAlphaTest)
 print "Max test beta = " + str(maxBetaTest)
